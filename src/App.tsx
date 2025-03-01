@@ -5,7 +5,7 @@ import routes from "tempo-routes";
 
 function App() {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <>
         <Routes>
           <Route path="/" element={<Home />} />
