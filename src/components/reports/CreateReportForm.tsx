@@ -114,13 +114,42 @@ const CreateReportForm: React.FC<CreateReportFormProps> = ({
     }
   };
 
-  const handleSubmit = form.handleSubmit((data) => {
-    // Include photos with the form data
-    const formData = {
-      ...data,
-      photos: uploadedPhotos,
-    };
-    onSubmit(formData as z.infer<typeof formSchema>);
+  const handleSubmit = form.handleSubmit(async (data) => {
+    try {
+      // Include photos with the form data
+      const formData = {
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        location: data.location,
+        reporter_id: 1, // Default to first user for demo
+        images: uploadedPhotos,
+      };
+
+      // Call the API to create a new report
+      const response = await fetch("http://localhost/api/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Pass the result to the parent component
+        onSubmit({ ...data, id: result.id, photos: uploadedPhotos } as z.infer<
+          typeof formSchema
+        >);
+      } else {
+        console.error("Failed to submit report:", result.error);
+        // You could add error handling UI here
+      }
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      // You could add error handling UI here
+    }
   });
 
   const steps = [

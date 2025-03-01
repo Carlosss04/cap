@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -92,74 +92,115 @@ const formatTimestamp = (timestamp: string) => {
 };
 
 const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
-  notifications = [
-    {
-      id: "1",
-      title: "Issue Status Updated",
-      message:
-        "The pothole report on Main Street has been marked as 'In Progress'.",
-      type: "update",
-      isRead: false,
-      timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
-      relatedIssueId: "ISS-001",
-    },
-    {
-      id: "2",
-      title: "Issue Resolved",
-      message: "The street light repair on Oak Avenue has been completed.",
-      type: "success",
-      isRead: false,
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3 hours ago
-      relatedIssueId: "ISS-002",
-    },
-    {
-      id: "3",
-      title: "New Comment",
-      message: "Juan Dela Cruz commented on your drainage issue report.",
-      type: "info",
-      isRead: true,
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
-      sender: {
-        name: "Juan Dela Cruz",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Juan",
-      },
-      relatedIssueId: "ISS-003",
-    },
-    {
-      id: "4",
-      title: "Issue Assigned",
-      message: "Your water supply issue has been assigned to Engineer Reyes.",
-      type: "info",
-      isRead: true,
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2 days ago
-      relatedIssueId: "ISS-004",
-    },
-    {
-      id: "5",
-      title: "Critical Alert",
-      message:
-        "Flash flood warning issued for Barangay San Jose. Please take necessary precautions.",
-      type: "error",
-      isRead: false,
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 1).toISOString(), // 1 hour ago
-    },
-    {
-      id: "6",
-      title: "Scheduled Maintenance",
-      message:
-        "Water service will be interrupted in Barangay Sta. Rosa on June 20 from 9AM to 3PM.",
-      type: "warning",
-      isRead: true,
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(), // 3 days ago
-    },
-  ],
-  onMarkAsRead = () => {},
+  onMarkAsRead = async (id) => {
+    try {
+      const response = await fetch(`http://localhost/api/notifications/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ is_read: true }),
+      });
+
+      if (response.ok) {
+        // Update local state
+        setNotifications((prev) =>
+          prev.map((notification) =>
+            notification.id === id
+              ? { ...notification, isRead: true }
+              : notification,
+          ),
+        );
+      }
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
+  },
   onMarkAllAsRead = () => {},
-  onDeleteNotification = () => {},
+  onDeleteNotification = async (id) => {
+    try {
+      const response = await fetch(`http://localhost/api/notifications/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Remove from local state
+        setNotifications((prev) =>
+          prev.filter((notification) => notification.id !== id),
+        );
+      }
+    } catch (error) {
+      console.error("Failed to delete notification:", error);
+    }
+  },
   onClearAll = () => {},
   onViewNotification = () => {},
   onSettingsChange = () => {},
 }) => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  // Fetch notifications when component mounts
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch("http://localhost/api/notifications");
+        const data = await response.json();
+
+        // Transform API data to match component's expected format
+        const formattedNotifications = data.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          message: item.message,
+          type: item.type,
+          isRead: item.is_read === 1,
+          timestamp: item.created_at,
+          relatedIssueId: item.related_issue_id,
+          sender: item.sender_id
+            ? {
+                name: "User", // You would fetch user details in a real app
+                avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.sender_id}`,
+              }
+            : undefined,
+        }));
+
+        setNotifications(formattedNotifications);
+      } catch (error) {
+        console.error("Failed to fetch notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+
+    // Set up real-time updates
+    const eventSource = new EventSource(
+      "http://localhost/api/notifications/stream",
+    );
+
+    eventSource.onmessage = (event) => {
+      try {
+        const newNotification = JSON.parse(event.data);
+        setNotifications((prev) => [
+          {
+            id: newNotification.id,
+            title: newNotification.title,
+            message: newNotification.message,
+            type: newNotification.type,
+            isRead: false,
+            timestamp: newNotification.created_at,
+            relatedIssueId: newNotification.related_issue_id,
+          },
+          ...prev,
+        ]);
+      } catch (error) {
+        console.error("Error processing notification:", error);
+      }
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
   const [activeTab, setActiveTab] = useState("all");
   const [settings, setSettings] = useState<NotificationSettings>({
     emailNotifications: true,
