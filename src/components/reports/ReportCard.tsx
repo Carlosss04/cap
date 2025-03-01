@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { Eye, MessageCircle, MoreHorizontal } from "lucide-react";
+import { Eye, MessageCircle, MoreHorizontal, Share2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -147,6 +147,41 @@ const ReportCard: React.FC<ReportCardProps> = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:text-gray-700"
+                  onClick={() => {
+                    // Share functionality
+                    const shareUrl = `${window.location.origin}/reports/${id}`;
+                    if (navigator.share) {
+                      navigator
+                        .share({
+                          title: title,
+                          text: `Check out this community issue: ${title}`,
+                          url: shareUrl,
+                        })
+                        .catch((err) => console.log("Error sharing:", err));
+                    } else {
+                      // Fallback for browsers that don't support navigator.share
+                      navigator.clipboard.writeText(shareUrl);
+                      alert("Link copied to clipboard!");
+                    }
+                  }}
+                >
+                  <Share2 className="h-4 w-4 mr-1" />
+                  <span className="text-xs">Share</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Share this report</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         <DropdownMenu>
@@ -162,7 +197,27 @@ const ReportCard: React.FC<ReportCardProps> = ({
             <DropdownMenuItem onClick={() => onComment(id)}>
               Add Comment
             </DropdownMenuItem>
-            <DropdownMenuItem>Share Report</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                // Share functionality
+                const shareUrl = `${window.location.origin}/reports/${id}`;
+                if (navigator.share) {
+                  navigator
+                    .share({
+                      title: title,
+                      text: `Check out this community issue: ${title}`,
+                      url: shareUrl,
+                    })
+                    .catch((err) => console.log("Error sharing:", err));
+                } else {
+                  // Fallback for browsers that don't support navigator.share
+                  navigator.clipboard.writeText(shareUrl);
+                  alert("Link copied to clipboard!");
+                }
+              }}
+            >
+              Share Report
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardFooter>

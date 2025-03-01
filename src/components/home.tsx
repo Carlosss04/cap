@@ -25,9 +25,38 @@ const Home: React.FC = () => {
     setAuthModalOpen(true);
   };
 
+  const handleLoginSubmit = (email: string, password: string) => {
+    // In a real app, you would validate credentials against a database
+    // For demo purposes, we'll use hardcoded credentials
+    if (email === "juan@example.com" && password === "password") {
+      mockLogin("resident");
+    } else if (email === "admin@example.com" && password === "password") {
+      mockLogin("admin");
+    } else {
+      // Show error for invalid credentials
+      alert("Invalid email or password");
+    }
+  };
+
   const handleRegister = () => {
     setAuthModalTab("register");
     setAuthModalOpen(true);
+  };
+
+  const handleRegisterSubmit = (
+    name: string,
+    email: string,
+    password: string,
+  ) => {
+    // In a real app, you would create a new user in the database
+    // For demo purposes, we'll just log in the user with the provided info
+    setUser({
+      name: name,
+      email: email,
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
+      role: "resident",
+    });
+    setAuthModalOpen(false);
   };
 
   const handleLogout = () => {

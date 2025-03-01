@@ -35,6 +35,14 @@ const Navbar: React.FC<NavbarProps> = ({
   const [authModalTab, setAuthModalTab] = useState<"login" | "register">(
     "login",
   );
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [registerName, setRegisterName] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [registerError, setRegisterError] = useState("");
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const handleLoginClick = () => {
@@ -282,93 +290,224 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       )}
 
-      {/* Auth Modal */}
-      <Dialog open={authModalOpen} onOpenChange={setAuthModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">
-              {authModalTab === "login" ? "Log In" : "Sign Up"}
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="Enter your email"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="Enter your password"
-                />
-              </div>
-
-              {authModalTab === "register" && (
-                <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Confirm Password
-                  </label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    placeholder="Confirm your password"
-                  />
-                </div>
-              )}
-
-              <Button className="w-full">
+      {/* Auth Modal - Only show if user is not logged in */}
+      {!user && (
+        <Dialog open={authModalOpen} onOpenChange={setAuthModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold mb-4">
                 {authModalTab === "login" ? "Log In" : "Sign Up"}
-              </Button>
+              </h2>
 
-              <div className="text-center text-sm">
-                {authModalTab === "login" ? (
-                  <p>
-                    Don't have an account?{" "}
-                    <button
-                      className="text-blue-600 hover:underline"
-                      onClick={() => setAuthModalTab("register")}
+              {authModalTab === "login" ? (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (loginEmail && loginPassword) {
+                      // Call the login function from parent component
+                      if (typeof onLogin === "function") {
+                        // Pass credentials to parent for validation
+                        onLogin();
+                        // Reset form and errors
+                        setLoginEmail("");
+                        setLoginPassword("");
+                        setLoginError("");
+                      }
+                    } else {
+                      setLoginError("Please enter both email and password");
+                    }
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Sign up
-                    </button>
-                  </p>
-                ) : (
-                  <p>
-                    Already have an account?{" "}
-                    <button
-                      className="text-blue-600 hover:underline"
-                      onClick={() => setAuthModalTab("login")}
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Log in
-                    </button>
-                  </p>
-                )}
-              </div>
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Enter your password"
+                    />
+                  </div>
+
+                  {loginError && (
+                    <div className="text-red-500 text-sm">{loginError}</div>
+                  )}
+
+                  <Button type="submit" className="w-full">
+                    Log In
+                  </Button>
+
+                  <div className="text-center text-sm">
+                    <p>
+                      Don't have an account?{" "}
+                      <button
+                        type="button"
+                        className="text-blue-600 hover:underline"
+                        onClick={() => {
+                          setAuthModalTab("register");
+                          setLoginError("");
+                        }}
+                      >
+                        Sign up
+                      </button>
+                    </p>
+                  </div>
+                </form>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!registerName) {
+                      setRegisterError("Please enter your name");
+                      return;
+                    }
+                    if (!registerEmail) {
+                      setRegisterError("Please enter your email");
+                      return;
+                    }
+                    if (!registerPassword) {
+                      setRegisterError("Please enter a password");
+                      return;
+                    }
+                    if (registerPassword !== confirmPassword) {
+                      setRegisterError("Passwords do not match");
+                      return;
+                    }
+
+                    // Call the register function from parent component
+                    if (typeof onRegister === "function") {
+                      onRegister();
+                      // Reset form and errors
+                      setRegisterName("");
+                      setRegisterEmail("");
+                      setRegisterPassword("");
+                      setConfirmPassword("");
+                      setRegisterError("");
+                    }
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      value={registerName}
+                      onChange={(e) => setRegisterName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="register-email"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="register-email"
+                      value={registerEmail}
+                      onChange={(e) => setRegisterEmail(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="register-password"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="register-password"
+                      value={registerPassword}
+                      onChange={(e) => setRegisterPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Enter your password"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="confirmPassword"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Confirm your password"
+                    />
+                  </div>
+
+                  {registerError && (
+                    <div className="text-red-500 text-sm">{registerError}</div>
+                  )}
+
+                  <Button type="submit" className="w-full">
+                    Sign Up
+                  </Button>
+
+                  <div className="text-center text-sm">
+                    <p>
+                      Already have an account?{" "}
+                      <button
+                        type="button"
+                        className="text-blue-600 hover:underline"
+                        onClick={() => {
+                          setAuthModalTab("login");
+                          setRegisterError("");
+                        }}
+                      >
+                        Log in
+                      </button>
+                    </p>
+                  </div>
+                </form>
+              )}
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
     </nav>
   );
 };
