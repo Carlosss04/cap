@@ -35,8 +35,14 @@ interface RegisterFormData {
 const AuthModal: React.FC<AuthModalProps> = ({
   isOpen = true,
   onClose = () => {},
-  onLogin = () => {},
-  onRegister = () => {},
+  onLogin = () => {
+    // Close modal after login
+    setAuthModalOpen(false);
+  },
+  onRegister = () => {
+    // Close modal after registration
+    setAuthModalOpen(false);
+  },
   onForgotPassword = () => {},
 }) => {
   const [activeTab, setActiveTab] = useState<string>("login");
@@ -168,6 +174,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
     e.preventDefault();
     if (validateLoginForm()) {
       onLogin(loginForm);
+      setAuthModalOpen(false);
     }
   };
 
@@ -175,6 +182,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
     e.preventDefault();
     if (validateRegisterForm()) {
       onRegister(registerForm);
+      setAuthModalOpen(false);
     }
   };
 

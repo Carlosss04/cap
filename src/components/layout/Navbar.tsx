@@ -288,8 +288,8 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       )}
 
-      {/* Auth Modal - Only show if user is not logged in */}
-      {!user && (
+      {/* Auth Modal - Only show if user is not logged in and modal is open */}
+      {!user && authModalOpen && (
         <Dialog open={authModalOpen} onOpenChange={setAuthModalOpen}>
           <DialogContent className="sm:max-w-md">
             <div className="p-6">
