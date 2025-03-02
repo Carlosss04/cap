@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -111,8 +111,16 @@ const ReportsList: React.FC<ReportsListProps> = ({
         "https://images.unsplash.com/photo-1605600659873-d808a13e4d2a?q=80&w=200&auto=format&fit=crop",
     },
   ],
-  onViewReport = (id) => console.log(`View report ${id}`),
-  onCommentReport = (id) => console.log(`Comment on report ${id}`),
+  onViewReport = (id) => {
+    // Open report details
+    console.log(`View report ${id}`);
+    window.location.href = `/reports/${id}`;
+  },
+  onCommentReport = (id) => {
+    // Open comment section
+    console.log(`Comment on report ${id}`);
+    window.location.href = `/reports/${id}#comments`;
+  },
   onCreateReport = () => console.log("Create new report"),
   onFilterChange = (filters) => console.log("Filters changed", filters),
 }) => {
@@ -125,8 +133,48 @@ const ReportsList: React.FC<ReportsListProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const reportsPerPage = 4;
 
+  // Fetch reports from API
+  const [loading, setLoading] = useState(false);
+  const [apiReports, setApiReports] = useState<ReportData[]>([]);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost/api/reports");
+        if (response.ok) {
+          const data = await response.json();
+          // Transform data to match our interface
+          const formattedReports = data.map((report: any) => ({
+            id: report.id,
+            category: report.category,
+            title: report.title,
+            description: report.description,
+            status: report.status,
+            date: report.created_at,
+            location: report.location,
+            imageUrl:
+              report.images && report.images.length > 0
+                ? report.images[0]
+                : undefined,
+          }));
+          setApiReports(formattedReports);
+        }
+      } catch (error) {
+        console.error("Failed to fetch reports:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
+
+  // Use API reports if available, otherwise use default reports
+  const displayReports = apiReports.length > 0 ? apiReports : reports;
+
   // Filter reports based on active tab and filters
-  const filteredReports = reports.filter((report) => {
+  const filteredReports = displayReports.filter((report) => {
     // Filter by tab
     if (activeTab !== "all" && report.status !== activeTab) {
       return false;
@@ -183,11 +231,12 @@ const ReportsList: React.FC<ReportsListProps> = ({
   // Get counts for tabs
   const getCounts = () => {
     const counts = {
-      all: reports.length,
-      pending: reports.filter((r) => r.status === "pending").length,
-      "in-progress": reports.filter((r) => r.status === "in-progress").length,
-      resolved: reports.filter((r) => r.status === "resolved").length,
-      rejected: reports.filter((r) => r.status === "rejected").length,
+      all: displayReports.length,
+      pending: displayReports.filter((r) => r.status === "pending").length,
+      "in-progress": displayReports.filter((r) => r.status === "in-progress")
+        .length,
+      resolved: displayReports.filter((r) => r.status === "resolved").length,
+      rejected: displayReports.filter((r) => r.status === "rejected").length,
     };
     return counts;
   };
@@ -323,7 +372,11 @@ const ReportsList: React.FC<ReportsListProps> = ({
         </div>
 
         <TabsContent value={activeTab} className="p-4 mt-0">
-          {currentReports.length > 0 ? (
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          ) : currentReports.length > 0 ? (
             <div className="space-y-4">
               {currentReports.map((report) => (
                 <ReportCard

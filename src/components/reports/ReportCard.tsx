@@ -53,8 +53,14 @@ const ReportCard: React.FC<ReportCardProps> = ({
   date = "2023-06-15",
   location = "Main St, near Central Park",
   imageUrl = "https://images.unsplash.com/photo-1584463699057-a0c95a5a4e68?q=80&w=200&auto=format&fit=crop",
-  onView = () => {},
-  onComment = () => {},
+  onView = (id) => {
+    // Open a dialog or navigate to report details page
+    window.location.href = `/reports/${id}`;
+  },
+  onComment = (id) => {
+    // Open a comment dialog or navigate to comment section
+    window.location.href = `/reports/${id}#comments`;
+  },
 }) => {
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
     year: "numeric",

@@ -31,11 +31,11 @@ interface ResidentDashboardProps {
 
 const ResidentDashboard: React.FC<ResidentDashboardProps> = ({
   userName = "Resident",
-  totalReports = 24,
-  resolvedReports = 12,
-  pendingReports = 8,
-  inProgressReports = 4,
-  criticalReports = 2,
+  totalReports = 0,
+  resolvedReports = 0,
+  pendingReports = 0,
+  inProgressReports = 0,
+  criticalReports = 0,
   reports = [
     {
       id: "1",
@@ -111,6 +111,20 @@ const ResidentDashboard: React.FC<ResidentDashboardProps> = ({
     setActiveTab("reports");
   };
 
+  // Calculate stats based on reports
+  const calculateStats = () => {
+    const stats = {
+      total: reports.length,
+      resolved: reports.filter((r) => r.status === "resolved").length,
+      pending: reports.filter((r) => r.status === "pending").length,
+      inProgress: reports.filter((r) => r.status === "in-progress").length,
+      critical: 0, // You could add a critical flag to reports if needed
+    };
+    return stats;
+  };
+
+  const reportStats = calculateStats();
+
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -151,11 +165,11 @@ const ResidentDashboard: React.FC<ResidentDashboardProps> = ({
 
           <TabsContent value="dashboard" className="space-y-6">
             <DashboardStats
-              totalReports={totalReports}
-              resolvedReports={resolvedReports}
-              pendingReports={pendingReports}
-              inProgressReports={inProgressReports}
-              criticalReports={criticalReports}
+              totalReports={reportStats.total}
+              resolvedReports={reportStats.resolved}
+              pendingReports={reportStats.pending}
+              inProgressReports={reportStats.inProgress}
+              criticalReports={reportStats.critical}
             />
 
             <Card className="bg-white">

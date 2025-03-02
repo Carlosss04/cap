@@ -48,13 +48,11 @@ const Navbar: React.FC<NavbarProps> = ({
   const handleLoginClick = () => {
     setAuthModalTab("login");
     setAuthModalOpen(true);
-    onLogin();
   };
 
   const handleRegisterClick = () => {
     setAuthModalTab("register");
     setAuthModalOpen(true);
-    onRegister();
   };
 
   return (
@@ -308,6 +306,8 @@ const Navbar: React.FC<NavbarProps> = ({
                       if (typeof onLogin === "function") {
                         // Pass credentials to parent for validation
                         onLogin();
+                        // Close the modal
+                        setAuthModalOpen(false);
                         // Reset form and errors
                         setLoginEmail("");
                         setLoginPassword("");
@@ -401,6 +401,8 @@ const Navbar: React.FC<NavbarProps> = ({
                     // Call the register function from parent component
                     if (typeof onRegister === "function") {
                       onRegister();
+                      // Close the modal
+                      setAuthModalOpen(false);
                       // Reset form and errors
                       setRegisterName("");
                       setRegisterEmail("");

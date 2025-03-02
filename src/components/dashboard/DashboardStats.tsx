@@ -52,11 +52,11 @@ interface DashboardStatsProps {
 }
 
 const DashboardStats: React.FC<DashboardStatsProps> = ({
-  totalReports = 24,
-  resolvedReports = 12,
-  pendingReports = 8,
-  inProgressReports = 4,
-  criticalReports = 2,
+  totalReports = 0,
+  resolvedReports = 0,
+  pendingReports = 0,
+  inProgressReports = 0,
+  criticalReports = 0,
 }) => {
   return (
     <div className="bg-gray-50 p-4 rounded-lg">
