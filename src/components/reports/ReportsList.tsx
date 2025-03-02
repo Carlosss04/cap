@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import ViewReportDialog from "./ViewReportDialog";
 import {
   Select,
   SelectContent,
@@ -112,14 +113,26 @@ const ReportsList: React.FC<ReportsListProps> = ({
     },
   ],
   onViewReport = (id) => {
-    // Open report details
-    console.log(`View report ${id}`);
-    window.location.href = `/reports/${id}`;
+    // Find the report and show it in dialog
+    const report = displayReports.find((r) => r.id === id);
+    if (report) {
+      setSelectedReport(report);
+      setIsViewDialogOpen(true);
+    }
   },
   onCommentReport = (id) => {
-    // Open comment section
-    console.log(`Comment on report ${id}`);
-    window.location.href = `/reports/${id}#comments`;
+    // Find the report and show it in dialog with comment section focused
+    const report = displayReports.find((r) => r.id === id);
+    if (report) {
+      setSelectedReport(report);
+      setIsViewDialogOpen(true);
+      // Focus on comment section after dialog opens
+      setTimeout(() => {
+        const commentSection = document.getElementById("comments");
+        if (commentSection)
+          commentSection.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
   },
   onCreateReport = () => console.log("Create new report"),
   onFilterChange = (filters) => console.log("Filters changed", filters),
@@ -136,6 +149,8 @@ const ReportsList: React.FC<ReportsListProps> = ({
   // Fetch reports from API
   const [loading, setLoading] = useState(false);
   const [apiReports, setApiReports] = useState<ReportData[]>([]);
+  const [selectedReport, setSelectedReport] = useState<ReportData | null>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -473,6 +488,15 @@ const ReportsList: React.FC<ReportsListProps> = ({
           )}
         </TabsContent>
       </Tabs>
+
+      {/* View Report Dialog */}
+      {selectedReport && (
+        <ViewReportDialog
+          isOpen={isViewDialogOpen}
+          onClose={() => setIsViewDialogOpen(false)}
+          report={selectedReport}
+        />
+      )}
     </div>
   );
 };

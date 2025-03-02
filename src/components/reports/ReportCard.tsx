@@ -54,15 +54,11 @@ const ReportCard: React.FC<ReportCardProps> = ({
   location = "Main St, near Central Park",
   imageUrl = "https://images.unsplash.com/photo-1584463699057-a0c95a5a4e68?q=80&w=200&auto=format&fit=crop",
   onView = (id) => {
-    // In a real app, this would navigate to the report detail page
-    // For now, we'll open a new window with the report detail
-    window.open(`/reports/${id}`, "_blank");
-    alert(`Viewing report ${id}`);
+    // Show report details in a dialog or modal
+    alert(`Viewing details for report ${id}`);
   },
   onComment = (id) => {
-    // In a real app, this would navigate to the comment section
-    // For now, we'll open a new window with the report detail and focus on comments
-    window.open(`/reports/${id}#comments`, "_blank");
+    // Show comment form in a dialog or modal
     alert(`Adding comment to report ${id}`);
   },
 }) => {
