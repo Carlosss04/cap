@@ -186,9 +186,23 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
       isValid = false;
     }
 
-    if (registerForm.role === "admin" && !registerForm.verificationInfo) {
-      errors.verificationInfo = "Please provide verification information";
-      isValid = false;
+    if (registerForm.role === "admin") {
+      if (!registerForm.verificationInfo) {
+        errors.verificationInfo = "Please provide verification information";
+        isValid = false;
+      } else if (registerForm.verificationInfo.length < 50) {
+        errors.verificationInfo =
+          "Please provide more detailed verification information (at least 50 characters)";
+        isValid = false;
+      } else if (
+        !/\b(LGU|ID|employee|staff|official|position|department|barangay)\b/i.test(
+          registerForm.verificationInfo,
+        )
+      ) {
+        errors.verificationInfo =
+          "Your verification must include official details like ID number, position, department, etc.";
+        isValid = false;
+      }
     }
 
     setRegisterErrors(errors);
@@ -493,8 +507,8 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
                       <Textarea
                         id="verification-info"
                         name="verificationInfo"
-                        placeholder="Please provide your position, ID number, or other information that verifies you work for the LGU or barangay"
-                        className="pl-10 min-h-[100px]"
+                        placeholder="Please provide your position, ID number, or other information that verifies you work for the LGU or barangay. Include your employee ID, department, position title, and contact information of your supervisor."
+                        className="pl-10 min-h-[150px]"
                         value={registerForm.verificationInfo}
                         onChange={handleRegisterChange}
                       />
@@ -504,10 +518,25 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
                         {registerErrors.verificationInfo}
                       </p>
                     )}
-                    <p className="text-xs text-muted-foreground">
-                      Your account will need to be verified by an administrator
-                      before you can access admin features.
-                    </p>
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 mt-2">
+                      <p className="text-xs text-yellow-800 font-medium">
+                        <strong>Important:</strong> Your account will need to be
+                        verified by an administrator before you can access admin
+                        features.
+                      </p>
+                      <ul className="text-xs text-yellow-800 mt-1 list-disc list-inside">
+                        <li>Include your complete employee ID number</li>
+                        <li>Specify your department and position title</li>
+                        <li>Provide contact information of your supervisor</li>
+                        <li>
+                          Mention your official email address if available
+                        </li>
+                      </ul>
+                      <p className="text-xs text-yellow-800 mt-1">
+                        Incomplete or false information will result in rejection
+                        of your account.
+                      </p>
+                    </div>
                   </div>
                 )}
 

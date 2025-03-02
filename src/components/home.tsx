@@ -43,16 +43,44 @@ const Home: React.FC = () => {
     setAuthModalOpen(true);
   };
 
-  const handleRegisterSubmit = (data: any) => {
-    // In a real app, you would create a new user in the database
-    // For demo purposes, we'll just log in the user with the provided info
-    setUser({
-      name: data.name,
-      email: data.email,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`,
-      role: data.role || "resident",
-    });
-    setAuthModalOpen(false);
+  const handleRegisterSubmit = async (data: any) => {
+    try {
+      // In a real app, this would send data to your API
+      // For demo purposes, we'll simulate an API call
+      console.log("Registering user:", data);
+
+      // If admin role, show verification pending message
+      if (data.role === "admin") {
+        alert(
+          "Your account has been registered but requires verification. An administrator will review your information and approve your account.",
+        );
+        setAuthModalOpen(false);
+        return;
+      }
+
+      // For residents, log them in immediately
+      setUser({
+        name: data.name,
+        email: data.email,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`,
+        role: "resident", // Always set to resident for now
+      });
+      setAuthModalOpen(false);
+
+      // Save to local storage for persistence
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          name: data.name,
+          email: data.email,
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`,
+          role: "resident",
+        }),
+      );
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Registration failed. Please try again.");
+    }
   };
 
   const handleLogout = () => {
@@ -166,21 +194,37 @@ const Home: React.FC = () => {
         <EnhancedAuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
-          onLogin={(data) => {
-            // In a real app, you would validate credentials against a database
-            if (
-              data.email === "juan@example.com" &&
-              data.password === "password"
-            ) {
-              mockLogin("resident");
-            } else if (
-              data.email === "admin@example.com" &&
-              data.password === "password"
-            ) {
-              mockLogin("admin");
-            } else {
-              // Show error for invalid credentials
-              alert("Invalid email or password");
+          onLogin={async (data) => {
+            try {
+              // In a real app, this would call your API
+              console.log("Login attempt:", data.email);
+
+              // For demo purposes, use hardcoded credentials
+              if (
+                data.email === "juan@example.com" &&
+                data.password === "password"
+              ) {
+                mockLogin("resident");
+              } else if (
+                data.email === "admin@example.com" &&
+                data.password === "password"
+              ) {
+                // Check if admin is verified (in a real app)
+                const isVerified = true; // This would be from API
+                if (isVerified) {
+                  mockLogin("admin");
+                } else {
+                  alert(
+                    "Your admin account is pending verification. Please check back later.",
+                  );
+                }
+              } else {
+                // Show error for invalid credentials
+                alert("Invalid email or password");
+              }
+            } catch (error) {
+              console.error("Login error:", error);
+              alert("Login failed. Please try again.");
             }
           }}
           onRegister={handleRegisterSubmit}
