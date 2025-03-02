@@ -72,16 +72,7 @@ const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-6">
-            {user?.role === "admin" && (
-              <Link
-                to="/admin"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-              >
-                Admin
-              </Link>
-            )}
-          </div>
+          <div className="hidden md:flex md:items-center md:space-x-6"></div>
 
           {/* User Menu & Auth Buttons */}
           <div className="flex items-center space-x-4">
@@ -233,17 +224,7 @@ const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-gray-200 shadow-md">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {user?.role === "admin" && (
-              <Link
-                to="/admin"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Admin
-              </Link>
-            )}
-          </div>
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3"></div>
         </div>
       )}
 

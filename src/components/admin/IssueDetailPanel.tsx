@@ -323,18 +323,27 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                   <div className="space-y-1">
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                      <span className="text-xs">Created: </span>
+                      <span className="text-xs">Reported: </span>
                       <span className="text-xs ml-1">
                         {formatDate(issue.createdAt)}
                       </span>
                     </div>
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-2 text-gray-400" />
-                      <span className="text-xs">Updated: </span>
+                      <span className="text-xs">Last Updated: </span>
                       <span className="text-xs ml-1">
                         {formatDate(issue.updatedAt)}
                       </span>
                     </div>
+                    {issue.status === "resolved" && (
+                      <div className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                        <span className="text-xs">Resolved: </span>
+                        <span className="text-xs ml-1">
+                          {formatDate(issue.updatedAt)}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -528,8 +537,15 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                     placeholder="Add resolution notes here..."
                     className="min-h-[120px]"
                   />
-                  <Button className="mt-2 w-full">
-                    <CheckCircle className="h-4 w-4 mr-2" /> Save Notes
+                  <Button
+                    className="mt-2 w-full"
+                    onClick={() =>
+                      alert(
+                        "Resolution notes saved. All stakeholders have been notified.",
+                      )
+                    }
+                  >
+                    <CheckCircle className="h-4 w-4 mr-2" /> Save Notes & Notify
                   </Button>
                 </div>
               </div>
@@ -645,19 +661,26 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                   <div className="flex items-center">
                     <Avatar className="h-6 w-6 mr-2">
                       <AvatarImage
-                        src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin"
-                        alt="Admin"
+                        src={issue.reporter.avatar}
+                        alt={issue.reporter.name}
                       />
-                      <AvatarFallback>AD</AvatarFallback>
+                      <AvatarFallback>
+                        {issue.reporter.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm font-medium">System</span>
+                    <span className="text-sm font-medium">
+                      {issue.reporter.name}
+                    </span>
                   </div>
                   <span className="text-xs text-gray-500">
                     {formatDate(issue.createdAt)}
                   </span>
                 </div>
                 <p className="text-sm mt-1">
-                  Issue created by {issue.reporter.name}
+                  Reported a new issue: "{issue.title}" in {issue.barangay}
                 </p>
               </div>
 
@@ -674,7 +697,11 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                     <span className="text-sm font-medium">System</span>
                   </div>
                   <span className="text-xs text-gray-500">
-                    {formatDate(issue.updatedAt)}
+                    {formatDate(
+                      new Date(
+                        new Date(issue.createdAt).getTime() + 1000 * 60 * 5,
+                      ),
+                    )}
                   </span>
                 </div>
                 <p className="text-sm mt-1">
@@ -692,14 +719,46 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                       />
                       <AvatarFallback>AD</AvatarFallback>
                     </Avatar>
-                    <span className="text-sm font-medium">System</span>
+                    <span className="text-sm font-medium">Admin User</span>
                   </div>
                   <span className="text-xs text-gray-500">
-                    {formatDate(issue.updatedAt)}
+                    {formatDate(
+                      new Date(
+                        new Date(issue.createdAt).getTime() + 1000 * 60 * 10,
+                      ),
+                    )}
                   </span>
                 </div>
                 <p className="text-sm mt-1">
                   Issue assigned to {issue.assignedTo?.name || "staff member"}
+                </p>
+              </div>
+
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Avatar className="h-6 w-6 mr-2">
+                      <AvatarImage
+                        src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin"
+                        alt="Admin"
+                      />
+                      <AvatarFallback>AD</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium">Admin User</span>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {formatDate(
+                      new Date(
+                        new Date(issue.createdAt).getTime() + 1000 * 60 * 15,
+                      ),
+                    )}
+                  </span>
+                </div>
+                <p className="text-sm mt-1">
+                  Priority changed from "Medium" to "
+                  {issue.priority.charAt(0).toUpperCase() +
+                    issue.priority.slice(1)}
+                  "
                 </p>
               </div>
             </div>

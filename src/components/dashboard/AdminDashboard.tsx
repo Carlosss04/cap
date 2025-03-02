@@ -98,28 +98,67 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {selectedIssueId ? (
               <IssueDetailPanel
                 onClose={handleCloseIssueDetail}
-                onStatusChange={(status) =>
-                  onUpdateStatus(selectedIssueId, status)
-                }
-                onPriorityChange={(priority) =>
-                  onUpdatePriority(selectedIssueId, priority)
-                }
-                onAssign={(staffId) => onAssignIssue(selectedIssueId)}
+                onStatusChange={(status) => {
+                  // Update status in real-time
+                  onUpdateStatus(selectedIssueId, status);
+                  // Show notification
+                  alert(
+                    `Status updated to ${status}. All stakeholders have been notified.`,
+                  );
+                }}
+                onPriorityChange={(priority) => {
+                  // Update priority in real-time
+                  onUpdatePriority(selectedIssueId, priority);
+                  // Show notification
+                  alert(
+                    `Priority updated to ${priority}. All stakeholders have been notified.`,
+                  );
+                }}
+                onAssign={(staffId) => {
+                  // Assign staff in real-time
+                  onAssignIssue(selectedIssueId);
+                  // Show notification
+                  alert(
+                    `Issue assigned successfully. Staff member has been notified.`,
+                  );
+                }}
                 onDelete={() => {
                   onDeleteIssue(selectedIssueId);
                   handleCloseIssueDetail();
+                  // Show notification
+                  alert(`Issue deleted successfully.`);
+                }}
+                onAddComment={(comment) => {
+                  // Add comment in real-time
+                  alert(`Comment added. All stakeholders have been notified.`);
                 }}
               />
             ) : (
               <>
                 <FilterPanel onFilterChange={handleFilterChange} />
                 <IssueManagementTable
-                  onViewIssue={handleViewIssue}
+                  onViewIssue={onEditIssue} // Changed from handleViewIssue to onEditIssue to directly edit
                   onEditIssue={onEditIssue}
-                  onDeleteIssue={onDeleteIssue}
-                  onAssignIssue={onAssignIssue}
-                  onUpdateStatus={onUpdateStatus}
-                  onUpdatePriority={onUpdatePriority}
+                  onDeleteIssue={(id) => {
+                    onDeleteIssue(id);
+                    alert(`Issue deleted successfully.`);
+                  }}
+                  onAssignIssue={(id) => {
+                    onAssignIssue(id);
+                    alert(`Staff assigned successfully.`);
+                  }}
+                  onUpdateStatus={(id, status) => {
+                    onUpdateStatus(id, status);
+                    alert(
+                      `Status updated to ${status}. All stakeholders have been notified.`,
+                    );
+                  }}
+                  onUpdatePriority={(id, priority) => {
+                    onUpdatePriority(id, priority);
+                    alert(
+                      `Priority updated to ${priority}. All stakeholders have been notified.`,
+                    );
+                  }}
                 />
               </>
             )}

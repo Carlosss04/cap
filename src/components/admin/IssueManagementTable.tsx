@@ -460,24 +460,6 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              onClick={() => onViewIssue(issue.id)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>View details</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
                               onClick={() => onEditIssue(issue.id)}
                             >
                               <Edit className="h-4 w-4" />
@@ -503,7 +485,7 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
                           <DropdownMenuItem
                             onClick={() => onUpdateStatus(issue.id, "pending")}
                           >
-                            <Clock className="h-4 w-4 mr-2" />
+                            <Clock className="h-4 w-4 mr-2 text-yellow-600" />
                             Mark as Pending
                           </DropdownMenuItem>
                           <DropdownMenuItem
@@ -511,14 +493,20 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
                               onUpdateStatus(issue.id, "in-progress")
                             }
                           >
-                            <Clock className="h-4 w-4 mr-2" />
+                            <Clock className="h-4 w-4 mr-2 text-blue-600" />
                             Mark as In Progress
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => onUpdateStatus(issue.id, "resolved")}
                           >
-                            <CheckCircle className="h-4 w-4 mr-2" />
+                            <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
                             Mark as Resolved
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onAssignIssue(issue.id)}
+                          >
+                            <UserCheck className="h-4 w-4 mr-2 text-indigo-600" />
+                            Assign Staff
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => onDeleteIssue(issue.id)}
@@ -542,12 +530,28 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
           Showing {filteredIssues.length} of {issues.length} issues
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" disabled>
-            Previous
-          </Button>
-          <Button variant="outline" size="sm">
-            Next
-          </Button>
+          {selectedIssues.length > 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                if (
+                  confirm(
+                    `Are you sure you want to delete ${selectedIssues.length} selected issues?`,
+                  )
+                ) {
+                  selectedIssues.forEach((id) => onDeleteIssue(id));
+                  setSelectedIssues([]);
+                  alert(
+                    `${selectedIssues.length} issues deleted successfully.`,
+                  );
+                }
+              }}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete Selected ({selectedIssues.length})
+            </Button>
+          )}
         </div>
       </div>
     </div>
