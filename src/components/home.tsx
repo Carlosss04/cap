@@ -271,13 +271,15 @@ const Home: React.FC = () => {
         )}
       </div>
 
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        onLogin={() => mockLogin("resident")}
-        onRegister={() => mockLogin("resident")}
-      />
+      {/* Auth Modal - Only show if user is not logged in */}
+      {!user && (
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          onLogin={() => mockLogin("resident")}
+          onRegister={() => mockLogin("resident")}
+        />
+      )}
     </div>
   );
 };

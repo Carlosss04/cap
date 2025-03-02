@@ -122,8 +122,13 @@ const CreateReportForm: React.FC<CreateReportFormProps> = ({
         description: data.description,
         category: data.category,
         location: data.location,
+        contact_name: data.contactName,
+        contact_phone: data.contactPhone,
+        contact_email: data.contactEmail,
         reporter_id: 1, // Default to first user for demo
         images: uploadedPhotos,
+        status: "pending",
+        date: new Date().toISOString().split("T")[0],
       };
 
       // Call the API to create a new report
@@ -142,13 +147,16 @@ const CreateReportForm: React.FC<CreateReportFormProps> = ({
         onSubmit({ ...data, id: result.id, photos: uploadedPhotos } as z.infer<
           typeof formSchema
         >);
+        alert("Report submitted successfully!");
       } else {
         console.error("Failed to submit report:", result.error);
-        // You could add error handling UI here
+        alert("Failed to submit report. Please try again.");
       }
     } catch (error) {
       console.error("Error submitting report:", error);
-      // You could add error handling UI here
+      alert(
+        "Error submitting report. Please check your connection and try again.",
+      );
     }
   });
 
