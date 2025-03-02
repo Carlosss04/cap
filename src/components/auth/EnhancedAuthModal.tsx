@@ -63,6 +63,9 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
   const [forgotPasswordMode, setForgotPasswordMode] = useState<boolean>(false);
+  const [adminVerificationStatus, setAdminVerificationStatus] = useState<
+    "pending" | "approved" | "rejected"
+  >("pending");
 
   // Login form state
   const [loginForm, setLoginForm] = useState<LoginFormData>({
@@ -202,6 +205,23 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
         errors.verificationInfo =
           "Your verification must include official details like ID number, position, department, etc.";
         isValid = false;
+      } else {
+        // Simulate verification check
+        const containsValidID = /\b(ID|identification|number)\b/i.test(
+          registerForm.verificationInfo,
+        );
+        const containsPosition = /\b(position|role|title)\b/i.test(
+          registerForm.verificationInfo,
+        );
+        const containsDepartment = /\b(department|office|division)\b/i.test(
+          registerForm.verificationInfo,
+        );
+
+        if (!containsValidID || !containsPosition || !containsDepartment) {
+          errors.verificationInfo =
+            "Your verification information must include your ID number, position title, and department/office.";
+          isValid = false;
+        }
       }
     }
 
@@ -535,6 +555,29 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
                       <p className="text-xs text-yellow-800 mt-1">
                         Incomplete or false information will result in rejection
                         of your account.
+                      </p>
+                    </div>
+
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mt-2">
+                      <p className="text-xs text-blue-800 font-medium">
+                        <strong>Verification Process:</strong> Admin accounts
+                        undergo a verification process:
+                      </p>
+                      <ol className="text-xs text-blue-800 mt-1 list-decimal list-inside">
+                        <li>Submit your credentials with complete details</li>
+                        <li>
+                          Our verification team will review your information
+                        </li>
+                        <li>
+                          You'll receive an email notification about your
+                          verification status
+                        </li>
+                        <li>
+                          Once approved, you can log in with admin privileges
+                        </li>
+                      </ol>
+                      <p className="text-xs text-blue-800 mt-1">
+                        This process typically takes 1-2 business days.
                       </p>
                     </div>
                   </div>

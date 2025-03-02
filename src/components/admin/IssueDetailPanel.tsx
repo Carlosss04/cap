@@ -460,6 +460,24 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                               </SelectContent>
                             </Select>
                           </div>
+                          <div className="py-2">
+                            <Label htmlFor="staff-email">Staff Email</Label>
+                            <Input
+                              id="staff-email"
+                              placeholder="Enter staff email address"
+                              className="mt-2"
+                            />
+                          </div>
+                          <div className="py-2">
+                            <Label htmlFor="staff-notes">
+                              Assignment Notes
+                            </Label>
+                            <Textarea
+                              id="staff-notes"
+                              placeholder="Add notes about this assignment"
+                              className="mt-2 min-h-[80px]"
+                            />
+                          </div>
                           <DialogFooter>
                             <Button
                               variant="outline"
@@ -467,7 +485,7 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                             >
                               Cancel
                             </Button>
-                            <Button type="submit">Assign</Button>
+                            <Button type="submit">Assign & Notify</Button>
                           </DialogFooter>
                         </DialogContent>
                       </Dialog>
@@ -515,6 +533,22 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                             </SelectContent>
                           </Select>
                         </div>
+                        <div className="py-2">
+                          <Label htmlFor="staff-email">Staff Email</Label>
+                          <Input
+                            id="staff-email"
+                            placeholder="Enter staff email address"
+                            className="mt-2"
+                          />
+                        </div>
+                        <div className="py-2">
+                          <Label htmlFor="staff-notes">Assignment Notes</Label>
+                          <Textarea
+                            id="staff-notes"
+                            placeholder="Add notes about this assignment"
+                            className="mt-2 min-h-[80px]"
+                          />
+                        </div>
                         <DialogFooter>
                           <Button
                             variant="outline"
@@ -522,7 +556,7 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                           >
                             Cancel
                           </Button>
-                          <Button type="submit">Assign</Button>
+                          <Button type="submit">Assign & Notify</Button>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>

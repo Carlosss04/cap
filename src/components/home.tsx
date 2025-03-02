@@ -31,7 +31,15 @@ const Home: React.FC = () => {
     if (email === "juan@example.com" && password === "password") {
       mockLogin("resident");
     } else if (email === "admin@example.com" && password === "password") {
-      mockLogin("admin");
+      // Check if admin is verified
+      const isVerified = true; // In a real app, this would be checked in the database
+      if (isVerified) {
+        mockLogin("admin");
+      } else {
+        alert(
+          "Your admin account is pending verification. Please check your email for updates.",
+        );
+      }
     } else {
       // Show error for invalid credentials
       alert("Invalid email or password");
@@ -140,6 +148,51 @@ const Home: React.FC = () => {
                 </Button>
               </div>
             </div>
+
+            {/* How it works section */}
+            <div className="mt-16">
+              <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">
+                How It Works
+              </h2>
+              <div className="grid gap-8 md:grid-cols-3">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mb-4 mx-auto">
+                    <span className="text-lg font-bold">1</span>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 text-center mb-2">
+                    Report an Issue
+                  </h3>
+                  <p className="text-gray-500 text-center">
+                    Submit details about community issues you've encountered,
+                    including photos and location.
+                  </p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mb-4 mx-auto">
+                    <span className="text-lg font-bold">2</span>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 text-center mb-2">
+                    Officials Review
+                  </h3>
+                  <p className="text-gray-500 text-center">
+                    Barangay officials review, prioritize, and assign staff to
+                    address the reported issues.
+                  </p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mb-4 mx-auto">
+                    <span className="text-lg font-bold">3</span>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 text-center mb-2">
+                    Track Resolution
+                  </h3>
+                  <p className="text-gray-500 text-center">
+                    Receive updates as your report progresses through
+                    resolution, with full transparency.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -182,7 +235,18 @@ const Home: React.FC = () => {
               alert("Login failed. Please try again.");
             }
           }}
-          onRegister={handleRegisterSubmit}
+          onRegister={(data) => {
+            if (data.role === "admin") {
+              // For admin registrations, show verification pending message
+              alert(
+                "Your admin account registration has been submitted. Our verification team will review your credentials and you'll receive an email notification about your verification status within 1-2 business days.",
+              );
+              setAuthModalOpen(false);
+            } else {
+              // For residents, proceed with normal registration
+              handleRegisterSubmit(data);
+            }
+          }}
         />
       )}
     </div>
