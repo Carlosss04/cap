@@ -133,12 +133,22 @@ const ReportsList: React.FC<ReportsListProps> = ({
     }
 
     // Filter by status if selected
-    if (filters.status && filters.status !== "all" && report.status !== filters.status) {
+    if (
+      filters.status &&
+      filters.status !== "all" &&
+      report.status !== filters.status
+    ) {
       return false;
     }
 
     // Filter by category if selected
-    if (filters.category && filters.category !== "all" && report.category !== filters.category) {
+    if (
+      filters.category &&
+      filters.category !== "all" &&
+      report.category !== filters.category
+    ) {
+      return false;
+    }
 
     // Filter by search query
     if (filters.searchQuery) {
