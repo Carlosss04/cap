@@ -6,7 +6,7 @@ import { ArrowRight, Building, FileText, Users } from "lucide-react";
 import Navbar from "./layout/Navbar";
 import ResidentDashboard from "./dashboard/ResidentDashboard";
 import AdminDashboard from "./dashboard/AdminDashboard";
-import AuthModal from "./auth/AuthModal";
+import EnhancedAuthModal from "./auth/EnhancedAuthModal";
 
 const Home: React.FC = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -43,18 +43,14 @@ const Home: React.FC = () => {
     setAuthModalOpen(true);
   };
 
-  const handleRegisterSubmit = (
-    name: string,
-    email: string,
-    password: string,
-  ) => {
+  const handleRegisterSubmit = (data: any) => {
     // In a real app, you would create a new user in the database
     // For demo purposes, we'll just log in the user with the provided info
     setUser({
-      name: name,
-      email: email,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
-      role: "resident",
+      name: data.name,
+      email: data.email,
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`,
+      role: data.role || "resident",
     });
     setAuthModalOpen(false);
   };
@@ -166,18 +162,28 @@ const Home: React.FC = () => {
       </div>
 
       {/* Auth Modal - Only show if user is not logged in and modal is open */}
-      {!user && authModalOpen && (
-        <AuthModal
+      {!user && (
+        <EnhancedAuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
-          onLogin={() => {
-            mockLogin("resident");
-            setAuthModalOpen(false);
+          onLogin={(data) => {
+            // In a real app, you would validate credentials against a database
+            if (
+              data.email === "juan@example.com" &&
+              data.password === "password"
+            ) {
+              mockLogin("resident");
+            } else if (
+              data.email === "admin@example.com" &&
+              data.password === "password"
+            ) {
+              mockLogin("admin");
+            } else {
+              // Show error for invalid credentials
+              alert("Invalid email or password");
+            }
           }}
-          onRegister={() => {
-            mockLogin("resident");
-            setAuthModalOpen(false);
-          }}
+          onRegister={handleRegisterSubmit}
         />
       )}
     </div>
