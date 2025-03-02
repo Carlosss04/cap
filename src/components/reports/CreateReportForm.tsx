@@ -50,6 +50,7 @@ const formSchema = z.object({
   location: z
     .string()
     .min(5, { message: "Location must be at least 5 characters" }),
+  barangay: z.string().min(1, { message: "Please select your barangay" }),
   contactName: z
     .string()
     .min(2, { message: "Name must be at least 2 characters" }),
@@ -81,6 +82,7 @@ const CreateReportForm: React.FC<CreateReportFormProps> = ({
       title: "",
       description: "",
       location: "",
+      barangay: "",
       contactName: "",
       contactPhone: "",
       contactEmail: "",
@@ -122,6 +124,7 @@ const CreateReportForm: React.FC<CreateReportFormProps> = ({
         description: data.description,
         category: data.category,
         location: data.location,
+        barangay: data.barangay,
         contact_name: data.contactName,
         contact_phone: data.contactPhone,
         contact_email: data.contactEmail,
@@ -311,6 +314,40 @@ const CreateReportForm: React.FC<CreateReportFormProps> = ({
                       <FormDescription>
                         Specify where the issue is located (street address,
                         landmarks, etc.)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="barangay"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Barangay</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select your barangay" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Barangay 1">Barangay 1</SelectItem>
+                          <SelectItem value="Barangay 2">Barangay 2</SelectItem>
+                          <SelectItem value="Barangay 3">Barangay 3</SelectItem>
+                          <SelectItem value="Barangay 4">Barangay 4</SelectItem>
+                          <SelectItem value="Barangay 5">Barangay 5</SelectItem>
+                          <SelectItem value="Barangay 6">Barangay 6</SelectItem>
+                          <SelectItem value="Barangay 7">Barangay 7</SelectItem>
+                          <SelectItem value="Barangay 8">Barangay 8</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Select the barangay where the issue is located
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

@@ -73,18 +73,6 @@ const Navbar: React.FC<NavbarProps> = ({
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-6">
-            <Link
-              to="/"
-              className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-            >
-              Home
-            </Link>
-            <Link
-              to="/reports"
-              className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-            >
-              Reports
-            </Link>
             {user?.role === "admin" && (
               <Link
                 to="/admin"
@@ -93,12 +81,6 @@ const Navbar: React.FC<NavbarProps> = ({
                 Admin
               </Link>
             )}
-            <Link
-              to="/about"
-              className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-            >
-              About
-            </Link>
           </div>
 
           {/* User Menu & Auth Buttons */}
@@ -252,20 +234,6 @@ const Navbar: React.FC<NavbarProps> = ({
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-gray-200 shadow-md">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link
-              to="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              to="/reports"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Reports
-            </Link>
             {user?.role === "admin" && (
               <Link
                 to="/admin"
@@ -275,13 +243,6 @@ const Navbar: React.FC<NavbarProps> = ({
                 Admin
               </Link>
             )}
-            <Link
-              to="/about"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              About
-            </Link>
           </div>
         </div>
       )}

@@ -58,6 +58,7 @@ interface IssueDetailPanelProps {
     status: "pending" | "in-progress" | "resolved" | "rejected";
     priority: "low" | "medium" | "high" | "critical";
     location: string;
+    barangay: string;
     reporter: {
       name: string;
       email: string;
@@ -140,6 +141,7 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
     status: "in-progress",
     priority: "high",
     location: "Main Street near Oak Avenue intersection",
+    barangay: "Barangay 1",
     reporter: {
       name: "Maria Santos",
       email: "maria.santos@example.com",
@@ -280,7 +282,9 @@ const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
                   </h3>
                   <div className="flex items-center">
                     <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                    <span className="text-sm">{issue.location}</span>
+                    <span className="text-sm">
+                      {issue.location}, {issue.barangay}
+                    </span>
                   </div>
                 </div>
 
