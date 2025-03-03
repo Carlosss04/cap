@@ -48,7 +48,6 @@ interface RegisterFormData {
   password: string;
   confirmPassword: string;
   role: "resident" | "admin";
-  verificationInfo?: string;
 }
 
 const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
@@ -80,7 +79,6 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
     password: "",
     confirmPassword: "",
     role: "resident",
-    verificationInfo: "",
   });
 
   // Forgot password email state
@@ -184,47 +182,6 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
       isValid = false;
     }
 
-    if (!registerForm.role) {
-      errors.role = "Please select a role";
-      isValid = false;
-    }
-
-    if (registerForm.role === "admin") {
-      if (!registerForm.verificationInfo) {
-        errors.verificationInfo = "Please provide verification information";
-        isValid = false;
-      } else if (registerForm.verificationInfo.length < 50) {
-        errors.verificationInfo =
-          "Please provide more detailed verification information (at least 50 characters)";
-        isValid = false;
-      } else if (
-        !/\b(LGU|ID|employee|staff|official|position|department|barangay)\b/i.test(
-          registerForm.verificationInfo,
-        )
-      ) {
-        errors.verificationInfo =
-          "Your verification must include official details like ID number, position, department, etc.";
-        isValid = false;
-      } else {
-        // Simulate verification check
-        const containsValidID = /\b(ID|identification|number)\b/i.test(
-          registerForm.verificationInfo,
-        );
-        const containsPosition = /\b(position|role|title)\b/i.test(
-          registerForm.verificationInfo,
-        );
-        const containsDepartment = /\b(department|office|division)\b/i.test(
-          registerForm.verificationInfo,
-        );
-
-        if (!containsValidID || !containsPosition || !containsDepartment) {
-          errors.verificationInfo =
-            "Your verification information must include your ID number, position title, and department/office.";
-          isValid = false;
-        }
-      }
-    }
-
     setRegisterErrors(errors);
     return isValid;
   };
@@ -277,7 +234,6 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
       password: "",
       confirmPassword: "",
       role: "resident",
-      verificationInfo: "",
     });
     setLoginErrors({ email: "", password: "" });
     setRegisterErrors({
@@ -286,7 +242,6 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
       password: "",
       confirmPassword: "",
       role: "",
-      verificationInfo: "",
       general: "",
     });
     setForgotPasswordEmail("");
@@ -363,8 +318,9 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
             onValueChange={handleTabChange}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-1">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Login</TabsTrigger>
+              <TabsTrigger value="register">Register</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="space-y-4 py-4">
@@ -484,103 +440,6 @@ const EnhancedAuthModal: React.FC<EnhancedAuthModalProps> = ({
                     </p>
                   )}
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="register-role">Role</Label>
-                  <Select
-                    value={registerForm.role}
-                    onValueChange={handleRoleChange}
-                  >
-                    <SelectTrigger id="register-role" className="w-full">
-                      <SelectValue placeholder="Select your role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="resident">
-                        <div className="flex items-center">
-                          <User className="h-4 w-4 mr-2 text-blue-500" />
-                          <span>Resident</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="admin">
-                        <div className="flex items-center">
-                          <Building className="h-4 w-4 mr-2 text-green-500" />
-                          <span>Barangay Official/LGU Staff</span>
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {registerErrors.role && (
-                    <p className="text-sm text-red-500">
-                      {registerErrors.role}
-                    </p>
-                  )}
-                </div>
-
-                {registerForm.role === "admin" && (
-                  <div className="space-y-2">
-                    <Label htmlFor="verification-info">
-                      Verification Information
-                    </Label>
-                    <div className="relative">
-                      <FileCheck className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Textarea
-                        id="verification-info"
-                        name="verificationInfo"
-                        placeholder="Please provide your position, ID number, or other information that verifies you work for the LGU or barangay. Include your employee ID, department, position title, and contact information of your supervisor."
-                        className="pl-10 min-h-[150px]"
-                        value={registerForm.verificationInfo}
-                        onChange={handleRegisterChange}
-                      />
-                    </div>
-                    {registerErrors.verificationInfo && (
-                      <p className="text-sm text-red-500">
-                        {registerErrors.verificationInfo}
-                      </p>
-                    )}
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 mt-2">
-                      <p className="text-xs text-yellow-800 font-medium">
-                        <strong>Important:</strong> Your account will need to be
-                        verified by an administrator before you can access admin
-                        features.
-                      </p>
-                      <ul className="text-xs text-yellow-800 mt-1 list-disc list-inside">
-                        <li>Include your complete employee ID number</li>
-                        <li>Specify your department and position title</li>
-                        <li>Provide contact information of your supervisor</li>
-                        <li>
-                          Mention your official email address if available
-                        </li>
-                      </ul>
-                      <p className="text-xs text-yellow-800 mt-1">
-                        Incomplete or false information will result in rejection
-                        of your account.
-                      </p>
-                    </div>
-
-                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mt-2">
-                      <p className="text-xs text-blue-800 font-medium">
-                        <strong>Verification Process:</strong> Admin accounts
-                        undergo a verification process:
-                      </p>
-                      <ol className="text-xs text-blue-800 mt-1 list-decimal list-inside">
-                        <li>Submit your credentials with complete details</li>
-                        <li>
-                          Our verification team will review your information
-                        </li>
-                        <li>
-                          You'll receive an email notification about your
-                          verification status
-                        </li>
-                        <li>
-                          Once approved, you can log in with admin privileges
-                        </li>
-                      </ol>
-                      <p className="text-xs text-blue-800 mt-1">
-                        This process typically takes 1-2 business days.
-                      </p>
-                    </div>
-                  </div>
-                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="register-password">Password</Label>

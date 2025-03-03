@@ -57,15 +57,6 @@ const Home: React.FC = () => {
       // For demo purposes, we'll simulate an API call
       console.log("Registering user:", data);
 
-      // If admin role, show verification pending message
-      if (data.role === "admin") {
-        alert(
-          "Your account has been registered but requires verification. An administrator will review your information and approve your account.",
-        );
-        setAuthModalOpen(false);
-        return;
-      }
-
       // For residents, log them in immediately
       setUser({
         name: data.name,
