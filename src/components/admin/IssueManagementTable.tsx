@@ -259,7 +259,7 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
               <SelectValue placeholder="Barangay" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Barangays</SelectItem>
+              <SelectItem value="all">All Barangays</SelectItem>
               <SelectItem value="Barangay 1">Barangay 1</SelectItem>
               <SelectItem value="Barangay 2">Barangay 2</SelectItem>
               <SelectItem value="Barangay 3">Barangay 3</SelectItem>
@@ -273,7 +273,7 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem>
               <SelectItem value="Road Damage">Road Damage</SelectItem>
               <SelectItem value="Drainage">Drainage</SelectItem>
               <SelectItem value="Electricity">Electricity</SelectItem>
@@ -287,7 +287,7 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
               <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Priorities</SelectItem>
+              <SelectItem value="all">All Priorities</SelectItem>
               <SelectItem value="low">Low</SelectItem>
               <SelectItem value="medium">Medium</SelectItem>
               <SelectItem value="high">High</SelectItem>
@@ -300,7 +300,7 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Statuses</SelectItem>
+              <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="in-progress">In Progress</SelectItem>
               <SelectItem value="resolved">Resolved</SelectItem>
