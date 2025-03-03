@@ -113,7 +113,9 @@ const Home: React.FC = () => {
         {user ? (
           // Show dashboard based on user role
           user.role === "admin" ? (
-            <AdminDashboard />
+            <div className="w-full">
+              <AdminDashboard />
+            </div>
           ) : (
             <ResidentDashboard userName={user.name} />
           )
