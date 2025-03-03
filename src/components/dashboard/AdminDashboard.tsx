@@ -135,10 +135,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               />
             ) : (
               <>
-                <FilterPanel onFilterChange={handleFilterChange} />
                 <IssueManagementTable
-                  onViewIssue={onEditIssue} // Changed from handleViewIssue to onEditIssue to directly edit
-                  onEditIssue={onEditIssue}
+                  onViewIssue={handleViewIssue}
+                  onEditIssue={handleViewIssue}
                   onDeleteIssue={(id) => {
                     onDeleteIssue(id);
                     alert(`Issue deleted successfully.`);

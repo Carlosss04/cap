@@ -183,10 +183,10 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
 }) => {
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterBarangay, setFilterBarangay] = useState("");
-  const [filterCategory, setFilterCategory] = useState("");
-  const [filterPriority, setFilterPriority] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
+  const [filterBarangay, setFilterBarangay] = useState("all");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [filterPriority, setFilterPriority] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -215,18 +215,19 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
 
     // Barangay filter
     const matchesBarangay =
-      filterBarangay === "" || issue.barangay === filterBarangay;
+      filterBarangay === "all" || issue.barangay === filterBarangay;
 
     // Category filter
     const matchesCategory =
-      filterCategory === "" || issue.category === filterCategory;
+      filterCategory === "all" || issue.category === filterCategory;
 
     // Priority filter
     const matchesPriority =
-      filterPriority === "" || issue.priority === filterPriority;
+      filterPriority === "all" || issue.priority === filterPriority;
 
     // Status filter
-    const matchesStatus = filterStatus === "" || issue.status === filterStatus;
+    const matchesStatus =
+      filterStatus === "all" || issue.status === filterStatus;
 
     return (
       matchesSearch &&
@@ -242,15 +243,6 @@ const IssueManagementTable: React.FC<IssueManagementTableProps> = ({
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Community Issues</h2>
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search issues..."
-              className="pl-9 w-full"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
