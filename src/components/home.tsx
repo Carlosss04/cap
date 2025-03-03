@@ -30,7 +30,7 @@ const Home: React.FC = () => {
     // For demo purposes, we'll use hardcoded credentials
     if (email === "juan@example.com" && password === "password") {
       mockLogin("resident");
-    } else if (email === "admin@example.com" && password === "password") {
+    } else if (email === "admin@lgu.gov.ph" && password === "admin123") {
       // Check if admin is verified
       const isVerified = true; // In a real app, this would be checked in the database
       if (isVerified) {
@@ -99,7 +99,7 @@ const Home: React.FC = () => {
   const mockLogin = (role: "resident" | "admin" | "staff" = "resident") => {
     setUser({
       name: role === "admin" ? "Admin User" : "Juan Dela Cruz",
-      email: role === "admin" ? "admin@example.com" : "juan@example.com",
+      email: role === "admin" ? "admin@lgu.gov.ph" : "juan@example.com",
       avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${role}`,
       role: role,
     });
@@ -142,10 +142,17 @@ const Home: React.FC = () => {
               <div className="mt-10 flex justify-center gap-4">
                 <Button
                   className="px-8 py-3 text-lg font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                  onClick={() => mockLogin("resident")}
+                  onClick={() => handleLogin()}
                 >
                   Get Started
                 </Button>
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-gray-600">Admin login credentials:</p>
+                <p className="text-gray-600 font-medium">
+                  Email: admin@lgu.gov.ph
+                </p>
+                <p className="text-gray-600 font-medium">Password: admin123</p>
               </div>
             </div>
 
@@ -214,8 +221,8 @@ const Home: React.FC = () => {
               ) {
                 mockLogin("resident");
               } else if (
-                data.email === "admin@example.com" &&
-                data.password === "password"
+                data.email === "admin@lgu.gov.ph" &&
+                data.password === "admin123"
               ) {
                 // Check if admin is verified (in a real app)
                 const isVerified = true; // This would be from API
